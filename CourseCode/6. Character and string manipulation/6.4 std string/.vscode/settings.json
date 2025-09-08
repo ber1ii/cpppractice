@@ -1,48 +1,27 @@
 {
-    "files.associations": {
-        "atomic": "cpp",
-        "bit": "cpp",
-        "cctype": "cpp",
-        "clocale": "cpp",
-        "cmath": "cpp",
-        "compare": "cpp",
-        "concepts": "cpp",
-        "cstddef": "cpp",
-        "cstdint": "cpp",
-        "cstdio": "cpp",
-        "cstdlib": "cpp",
-        "cstring": "cpp",
-        "ctime": "cpp",
-        "cwchar": "cpp",
-        "exception": "cpp",
-        "initializer_list": "cpp",
-        "ios": "cpp",
-        "iosfwd": "cpp",
-        "iostream": "cpp",
-        "istream": "cpp",
-        "iterator": "cpp",
-        "limits": "cpp",
-        "memory": "cpp",
-        "new": "cpp",
-        "ostream": "cpp",
-        "stdexcept": "cpp",
-        "streambuf": "cpp",
-        "system_error": "cpp",
-        "tuple": "cpp",
-        "type_traits": "cpp",
-        "typeinfo": "cpp",
-        "utility": "cpp",
-        "xfacet": "cpp",
-        "xiosbase": "cpp",
-        "xlocale": "cpp",
-        "xlocinfo": "cpp",
-        "xlocnum": "cpp",
-        "xmemory": "cpp",
-        "xstddef": "cpp",
-        "xstring": "cpp",
-        "xtr1common": "cpp",
-        "xutility": "cpp",
-        "vector": "cpp",
-        "string": "cpp"
-    }
+  // C/C++ extension settings
+  "C_Cpp.default.cppStandard": "c++23",
+  "C_Cpp.default.compilerPath": "/usr/bin/g++",
+  "C_Cpp.default.intelliSenseMode": "linux-gcc-x64",
+  "C_Cpp.default.includePath": [
+    "${workspaceFolder}/**",
+    "/usr/include",
+    "/usr/local/include"
+  ],
+
+  // Use bash as integrated terminal (Manjaro KDE)
+  "terminal.integrated.defaultProfile.linux": "bash",
+
+  // Optional: accept suggestions only when you trigger them
+  "editor.quickSuggestions": {
+    "other": false,
+    "comments": false,
+    "strings": false
+  },
+  "editor.suggestOnTriggerCharacters": false,
+  "editor.acceptSuggestionOnEnter": "off",
+
+  // Editor conveniences
+  "editor.formatOnSave": true,
+  "files.autoSave": "off"
 }

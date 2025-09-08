@@ -1,26 +1,112 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "cppbuild",
-			"label": "Build with GCC 14.2.0",
-			"command": "D:\\C++\\mingw64\\bin\\g++.exe",
-			"args": [
-				"-fdiagnostics-color=always",
-				"-g",
-				"-std=c++23",
-				"${workspaceFolder}\\*.cpp",
-				"-o",
-				"${fileDirname}\\lynx.exe"
-			],
-			"options": {
-				"cwd": "${fileDirname}"
-			},
-			"problemMatcher": [
-				"$gcc"
-			],
-			"group": "build",
-			"detail": "compiler: D:\\C++\\mingw64\\bin\\g++.exe"
-		}
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Active File",
+      "type": "shell",
+      "command": "/usr/bin/g++",
+      "args": [
+        "-fdiagnostics-color=always",
+        "-g",
+        "-std=c++23",
+        "${file}",
+        "-o",
+        "${fileDirname}/${fileBasenameNoExtension}"
+      ],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": [
+        {
+          "owner": "cpp",
+          "fileLocation": ["relative", "${workspaceFolder}"],
+          "pattern": {
+            "regexp": "^(.*?):([0-9]+):([0-9]+):\\s+(warning|error):\\s+(.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "message": 5
+          }
+        }
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+
+    {
+      "label": "Make build dir",
+      "type": "shell",
+      "command": "mkdir -p \"${workspaceFolder}/build\"",
+      "problemMatcher": []
+    },
+
+    {
+      "label": "Build Workspace (all .cpp)",
+      "type": "shell",
+      "command": "/usr/bin/g++",
+      "args": [
+        "-fdiagnostics-color=always",
+        "-g",
+        "-std=c++23",
+        "${workspaceFolder}/*.cpp",
+        "-o",
+        "${workspaceFolder}/build/${workspaceFolderBasename}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": ["Make build dir"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": [
+        {
+          "owner": "cpp",
+          "fileLocation": ["relative", "${workspaceFolder}"],
+          "pattern": {
+            "regexp": "^(.*?):([0-9]+):([0-9]+):\\s+(warning|error):\\s+(.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "message": 5
+          }
+        }
+      ],
+      "group": "build"
+    },
+
+    {
+      "label": "Run Active Binary",
+      "type": "shell",
+      "command": "${fileDirname}/${fileBasenameNoExtension}",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "echo": true
+      },
+      "options": {
+        "cwd": "${fileDirname}"
+      }
+    },
+
+    {
+      "label": "Clean build folder",
+      "type": "shell",
+      "command": "rm -rf \"${workspaceFolder}/build\"",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "never"
+      }
+    }
+  ]
 }
