@@ -1,0 +1,27 @@
+{
+  // C/C++ extension settings
+  "C_Cpp.default.cppStandard": "c++23",
+  "C_Cpp.default.compilerPath": "/usr/bin/g++",
+  "C_Cpp.default.intelliSenseMode": "linux-gcc-x64",
+  "C_Cpp.default.includePath": [
+    "${workspaceFolder}/**",
+    "/usr/include",
+    "/usr/local/include"
+  ],
+
+  // Use bash as integrated terminal (Manjaro KDE)
+  "terminal.integrated.defaultProfile.linux": "bash",
+
+  // Optional: accept suggestions only when you trigger them
+  /*"editor.quickSuggestions": {
+    "other": false,
+    "comments": false,
+    "strings": false
+  },
+  "editor.suggestOnTriggerCharacters": false,
+  "editor.acceptSuggestionOnEnter": "off",*/
+
+  // Editor conveniences
+  "editor.formatOnSave": true,
+  "files.autoSave": "off"
+}

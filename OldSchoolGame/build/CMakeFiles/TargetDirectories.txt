@@ -1,0 +1,3 @@
+/home/beri/C++/cpppractice/OldSchoolGame/build/CMakeFiles/OldSchoolGame.dir
+/home/beri/C++/cpppractice/OldSchoolGame/build/CMakeFiles/edit_cache.dir
+/home/beri/C++/cpppractice/OldSchoolGame/build/CMakeFiles/rebuild_cache.dir
