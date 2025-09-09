@@ -1,5 +1,6 @@
 #include <array>
 #include <cassert>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <fstream>
@@ -48,6 +49,30 @@ void drawRectangle(std::vector<uint32_t> &fb, size_t fb_w, size_t fb_h,
       if (x + i >= fb_w)
         continue;
       fb[(y + j) * fb_w + (x + i)] = color;
+    }
+  }
+}
+
+void drawLine(std::vector<uint32_t> &fb, size_t fb_w, size_t fb_h, int x0,
+              int y0, int x1, int y1, uint32_t color) {
+  int dx = std::abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+  int dy = -std::abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+  int err = dx + dy;
+
+  while (true) {
+    if (x0 >= 0 && y0 >= 0 && x0 < (int)fb_w && y0 < (int)fb_h)
+      fb[y0 * fb_w + x0] = color;
+    if (x0 == x1 && y0 == y1)
+      break;
+
+    int e2 = 2 * err;
+    if (e2 >= dy) {
+      err += dy;
+      x0 += sx;
+    }
+    if (e2 <= dx) {
+      err += dx;
+      y0 += sy;
     }
   }
 }
@@ -114,6 +139,18 @@ int main() {
                 static_cast<int>(player_y - half_size), player_size,
                 player_size, packColor(255, 255, 255));
 
-  dropPpmImage("player.ppm", framebuffer, win_w, win_h);
+  // Player direction
+  float player_a = M_PI / 4.0f;
+  float dirX = std::cos(player_a);
+  float dirY = std::sin(player_a);
+
+  int lineLen = 80;
+  int x1 = static_cast<int>(player_x + dirX * lineLen);
+  int y1 = static_cast<int>(player_y + dirY * lineLen);
+
+  drawLine(framebuffer, win_w, win_h, static_cast<int>(player_x),
+           static_cast<int>(player_y), x1, y1, packColor(255, 255, 255));
+
+  dropPpmImage("playerDirection.ppm", framebuffer, win_w, win_h);
   return 0;
 }
