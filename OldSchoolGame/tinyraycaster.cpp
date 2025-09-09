@@ -141,16 +141,25 @@ int main() {
 
   // Player direction
   float player_a = M_PI / 4.0f;
-  float dirX = std::cos(player_a);
-  float dirY = std::sin(player_a);
 
-  int lineLen = 80;
-  int x1 = static_cast<int>(player_x + dirX * lineLen);
-  int y1 = static_cast<int>(player_y + dirY * lineLen);
+  // FOV rays
+  float fov = M_PI / 3.0f;
+  int numRays = 60;
+  int rayLen = 80;
 
-  drawLine(framebuffer, win_w, win_h, static_cast<int>(player_x),
-           static_cast<int>(player_y), x1, y1, packColor(255, 255, 255));
+  for (int k{}; k < numRays; k++) {
+    float angle =
+        player_a - fov / 2 + fov * (static_cast<float>(k) / (numRays - 1));
+    float dirX = std::cos(angle);
+    float dirY = std::sin(angle);
 
-  dropPpmImage("playerDirection.ppm", framebuffer, win_w, win_h);
+    int x1 = static_cast<int>(player_x + dirX * rayLen);
+    int y1 = static_cast<int>(player_y + dirY * rayLen);
+
+    drawLine(framebuffer, win_w, win_h, static_cast<int>(player_x),
+             static_cast<int>(player_y), x1, y1, packColor(255, 255, 255));
+  }
+
+  dropPpmImage("playerFOV.ppm", framebuffer, win_w, win_h);
   return 0;
 }
