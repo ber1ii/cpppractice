@@ -58,30 +58,49 @@ int main() {
 
   std::vector<uint32_t> framebuffer(win_w * win_h);
 
+  // Gradient
+  for (size_t j = 0; j < win_h; ++j) {
+    for (size_t i = 0; i < win_w; ++i) {
+      uint8_t r = static_cast<uint8_t>(255.f * j / win_h);
+      uint8_t g = static_cast<uint8_t>(255.f * i / win_w);
+      uint8_t b = 0;
+      framebuffer[i + j * win_w] = packColor(r, g, b);
+    }
+  }
+
   // Define a 16x16 map
   constexpr size_t map_w = 16;
   constexpr size_t map_h = 16;
-  const std::array<std::array<int, map_w>, map_h> map = {
-      {{{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}},
-       {{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}},
-       {{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}},
-       {{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}},
-       {{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}},
-       {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}}}};
-
+  const char map[] = "0000222222220000"
+                     "1              0"
+                     "1      11111   0"
+                     "1     0        0"
+                     "0     0  1110000"
+                     "0     3        0"
+                     "0   10000      0"
+                     "0   0   11100  0"
+                     "0   0   0      0"
+                     "0   0   1  00000"
+                     "0       1      0"
+                     "2       1      0"
+                     "0       0      0"
+                     "0 0000000      0"
+                     "0              0"
+                     "0002222222200000";
   constexpr size_t tileSize = 32;
 
-  for (size_t j{}; j < map_h; ++j) {
-    for (size_t i{}; i < map_w; ++i) {
-      uint32_t color = (map[j][i] == 1)
-                           ? packColor(255, 255, 255) // Walls = white
-                           : packColor(0, 0, 0);      // Walls = black
-      drawRectangle(framebuffer, win_w, win_h, i * tileSize, j * tileSize,
-                    tileSize, tileSize, color);
+  for (size_t j = 0; j < map_h; ++j) {
+    for (size_t i = 0; i < map_w; ++i) {
+      char tile = map[j * map_w + i];
+      if (tile != ' ') {
+        // Walls = cyan
+        uint32_t color = packColor(0, 255, 255);
+        drawRectangle(framebuffer, win_w, win_h, i * tileSize, j * tileSize,
+                      tileSize, tileSize, color);
+      }
     }
   }
 
   dropPpmImage("map.ppm", framebuffer, win_w, win_h);
-
   return 0;
 }
