@@ -89,6 +89,7 @@ int main() {
                      "0002222222200000";
   constexpr size_t tileSize = 32;
 
+  // Map drawing
   for (size_t j = 0; j < map_h; ++j) {
     for (size_t i = 0; i < map_w; ++i) {
       char tile = map[j * map_w + i];
@@ -101,6 +102,18 @@ int main() {
     }
   }
 
-  dropPpmImage("map.ppm", framebuffer, win_w, win_h);
+  // Drawing the player
+  float player_x = 3.5f * tileSize;
+  float player_y = 3.5f * tileSize;
+
+  constexpr int player_size = 5;
+  int half_size = player_size / 2;
+
+  drawRectangle(framebuffer, win_w, win_h,
+                static_cast<int>(player_x - half_size),
+                static_cast<int>(player_y - half_size), player_size,
+                player_size, packColor(255, 255, 255));
+
+  dropPpmImage("player.ppm", framebuffer, win_w, win_h);
   return 0;
 }
