@@ -53,6 +53,7 @@ void drawRectangle(std::vector<uint32_t> &fb, size_t fb_w, size_t fb_h,
   }
 }
 
+// Bresenham's line drawing algorithm
 void drawLine(std::vector<uint32_t> &fb, size_t fb_w, size_t fb_h, int x0,
               int y0, int x1, int y1, uint32_t color) {
   int dx = std::abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
@@ -77,19 +78,43 @@ void drawLine(std::vector<uint32_t> &fb, size_t fb_w, size_t fb_h, int x0,
   }
 }
 
+uint32_t wallColor(char tile) {
+  switch (tile) {
+  case '1':
+    return packColor(122, 56, 3); // dark orange
+  case '2':
+    return packColor(221, 249, 241); // ice white
+  case '3':
+    return packColor(0, 21, 21); // dark turquoise
+  default:
+    return packColor(17, 17, 17); // dark grey
+  }
+}
+
 int main() {
   constexpr size_t win_w = 512;
   constexpr size_t win_h = 512;
 
-  std::vector<uint32_t> framebuffer(win_w * win_h);
+  // Output framebuffer size = 2x width!
+  constexpr size_t out_w = win_w * 2;
+  constexpr size_t out_h = win_h;
 
-  // Gradient
+  std::vector<uint32_t> framebuffer(out_w * out_h);
+
+  // Minimap floor color
   for (size_t j = 0; j < win_h; ++j) {
     for (size_t i = 0; i < win_w; ++i) {
-      uint8_t r = static_cast<uint8_t>(255.f * j / win_h);
-      uint8_t g = static_cast<uint8_t>(255.f * i / win_w);
-      uint8_t b = 0;
-      framebuffer[i + j * win_w] = packColor(r, g, b);
+      framebuffer[i + j * out_w] = packColor(245, 245, 220);
+    }
+  }
+
+  for (size_t j{}; j < win_h; j++) {
+    for (size_t i = win_w; i < out_w; i++) {
+      if (j < win_h / 2) {
+        framebuffer[i + j * out_w] = packColor(245, 245, 220); // White
+      } else {
+        framebuffer[i + j * out_w] = packColor(245, 245, 220); // Beige
+      }
     }
   }
 
@@ -120,8 +145,8 @@ int main() {
       char tile = map[j * map_w + i];
       if (tile != ' ') {
         // Walls = cyan
-        uint32_t color = packColor(0, 255, 255);
-        drawRectangle(framebuffer, win_w, win_h, i * tileSize, j * tileSize,
+        uint32_t color = wallColor(tile);
+        drawRectangle(framebuffer, out_w, out_h, i * tileSize, j * tileSize,
                       tileSize, tileSize, color);
       }
     }
@@ -134,32 +159,87 @@ int main() {
   constexpr int player_size = 5;
   int half_size = player_size / 2;
 
-  drawRectangle(framebuffer, win_w, win_h,
+  drawRectangle(framebuffer, out_w, out_h,
                 static_cast<int>(player_x - half_size),
                 static_cast<int>(player_y - half_size), player_size,
-                player_size, packColor(255, 255, 255));
+                player_size, packColor(0, 0, 0));
 
   // Player direction
   float player_a = M_PI / 4.0f;
 
   // FOV rays
   float fov = M_PI / 3.0f;
-  int numRays = 60;
-  int rayLen = 80;
+  int numRays = win_w;
 
-  for (int k{}; k < numRays; k++) {
-    float angle =
-        player_a - fov / 2 + fov * (static_cast<float>(k) / (numRays - 1));
-    float dirX = std::cos(angle);
-    float dirY = std::sin(angle);
-
-    int x1 = static_cast<int>(player_x + dirX * rayLen);
-    int y1 = static_cast<int>(player_y + dirY * rayLen);
-
-    drawLine(framebuffer, win_w, win_h, static_cast<int>(player_x),
-             static_cast<int>(player_y), x1, y1, packColor(255, 255, 255));
+  // FOV Direction minimap
+  for (int k = 0; k < numRays; k++) {
+    float t = float(k) / (numRays - 1);
+    float ang = player_a - fov / 2 + fov * t;
+    float dx = cos(ang), dy = sin(ang);
+    int x1 = int(player_x + dx * 40);
+    int y1 = int(player_y + dy * 40);
+    drawLine(framebuffer, out_w, out_h, int(player_x), int(player_y), x1, y1,
+             packColor(57, 255, 20));
   }
 
-  dropPpmImage("playerFOV.ppm", framebuffer, win_w, win_h);
+  // 3D Rendering into right half
+  for (int k{}; k < numRays; k++) {
+
+    float angle =
+        player_a - fov / 2 + fov * (static_cast<float>(k) / (numRays - 1));
+    // player_a - fov/2 is the left most ray, while adding fov * k/numRays
+    // creates player_a + fov/2
+
+    float dirX = std::cos(angle); // Directional vectors
+    float dirY = std::sin(angle);
+
+    // Raymcarching until wall
+    float rayX = player_x;
+    float rayY = player_y;
+    float dist = 0.f;
+    const float step = 1.f;
+    char hitTile = ' ';
+
+    while (true) {
+      int mapX = static_cast<int>(rayX / tileSize); // y index
+      int mapY = static_cast<int>(rayY / tileSize); // x index
+
+      if (mapX < 0 || mapY < 0 || mapX >= (int)map_w || mapY >= (int)map_h)
+        break;
+
+      char tile = map[mapY * map_w + mapX]; // mapY * map_w = correct row (eg
+                                            // row 2*16) + mapX is the column
+      if (tile != ' ') {
+        hitTile = tile;
+        break;
+      }
+
+      rayX += dirX * step; // Store each ray while moving forward
+      rayY += dirY * step; // and return it to mapX and mapY
+      dist += step;
+    }
+
+    int wall_h = (int)((win_h * tileSize) / (dist + 0.0001f));
+    // screenHeight = wall_h, realHeight = tileSize, focalLength = win_h,
+    // distance = measured ray length
+    // screenHeight = (realHeight * focalLength) / distance
+
+    int y0 = win_h / 2 - wall_h / 2; // locking y axis
+    int y1 = win_h / 2 + wall_h / 2;
+
+    if (y0 < 0)
+      y0 = 0;
+    if (y1 > (int)win_h)
+      y1 = win_h;
+
+    uint32_t color = wallColor(hitTile);
+
+    int col = win_w + k;
+    for (int y = y0; y < y1; y++) {
+      framebuffer[y * out_w + col] = color;
+    }
+  }
+
+  dropPpmImage("3dmodel.ppm", framebuffer, out_w, out_h);
   return 0;
 }
