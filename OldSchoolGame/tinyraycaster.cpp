@@ -6,8 +6,12 @@
 #include <fstream>
 #include <iostream>
 #include <span>
+#include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <vector>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 // Define a 16x16 map
 constexpr size_t map_w = 16;
@@ -112,7 +116,35 @@ uint32_t wallColor(char tile) {
   }
 }
 
+std::vector<uint32_t> loadTexture(const std::string &filename, int &tex_w,
+                                  int &tex_h) {
+  int n;
+  unsigned char *data = stbi_load(filename.c_str(), &tex_w, &tex_h, &n, 4);
+
+  if (!data) {
+    throw std::runtime_error("Failed to load texture: " + filename);
+  }
+
+  std::vector<uint32_t> tex(tex_w * tex_h);
+
+  for (int i{}; i < tex_w * tex_h; i++) {
+    tex[i] = (uint32_t(data[4 * i + 3]) << 24) | // A
+             (uint32_t(data[4 * i + 2]) << 16) | // B
+             (uint32_t(data[4 * i + 1]) << 8) |  // G
+             (uint32_t(data[4 * i + 0]));        // R
+  }
+  stbi_image_free(data);
+  return tex;
+}
+
 int main() {
+  int tex_w, tex_h;
+  std::unordered_map<char, std::vector<uint32_t>> textures;
+
+  textures['0'] = loadTexture("cobblestone.png", tex_w, tex_h);
+  textures['1'] = loadTexture("lava.png", tex_w, tex_h);
+  textures['2'] = loadTexture("whitestone.png", tex_w, tex_h);
+  textures['3'] = loadTexture("pentagram.png", tex_w, tex_h);
   constexpr size_t win_w = 512;
   constexpr size_t win_h = 512;
 
@@ -195,56 +227,108 @@ int main() {
       float dirY = std::sin(angle);
 
       // Raymcarching until wall
-      float rayX = player_x;
-      float rayY = player_y;
-      float dist = 0.f;
-      const float step = 1.f;
+      float posX = player_x / float(tileSize);
+      float posY = player_y / float(tileSize);
+
+      int mapX = int(posX);
+      int mapY = int(posY);
+
+      float deltaDistX = (dirX == 0) ? 1e30f : fabs(1.0f / dirX);
+      float deltaDistY = (dirY == 0) ? 1e30f : fabs(1.0f / dirY);
+
+      int stepX, stepY;
+      float sideDistX, sideDistY;
+
+      if (dirX < 0) {
+        stepX = -1;
+        sideDistX = (posX - mapX) * deltaDistX;
+      } else {
+        stepX = 1;
+        sideDistX = (mapX + 1.0f - posX) * deltaDistX;
+      }
+      if (dirY < 0) {
+        stepY = -1;
+        sideDistY = (posY - mapY) * deltaDistY;
+      } else {
+        stepY = 1;
+        sideDistY = (mapY + 1.0f - posY) * deltaDistY;
+      }
+
+      bool hit = false;
+      int side{};
       char hitTile = ' ';
 
-      while (true) {
-        int mapX = static_cast<int>(rayX / tileSize); // y index
-        int mapY = static_cast<int>(rayY / tileSize); // x index
-
-        if (mapX < 0 || mapY < 0 || mapX >= (int)map_w || mapY >= (int)map_h)
-          break;
-
-        char tile = map[mapY * map_w + mapX]; // mapY * map_w = correct row (eg
-                                              // row 2*16) + mapX is the column
-        if (tile != ' ') {
-          hitTile = tile;
-          break;
+      while (!hit) {
+        if (sideDistX < sideDistY) {
+          sideDistX += deltaDistX;
+          mapX += stepX;
+          side = 0;
+        } else {
+          sideDistY += deltaDistY;
+          mapY += stepY;
+          side = 1;
         }
-
-        rayX += dirX * step; // Store each ray while moving forward
-        rayY += dirY * step; // and return it to mapX and mapY
-        dist += step;
+        if (mapX < 0 || mapX >= (int)map_w || mapY < 0 || mapY >= (int)map_h)
+          break;
+        char tile = map[mapY * map_w + mapX];
+        if (tile != ' ') {
+          hit = true;
+          hitTile = tile;
+        }
       }
-      // Correcting the distance by cosine to remove fisheye
-      float correctedDist = dist * cos(angle - player_a);
 
-      int wall_h = (int)((win_h * tileSize) / (correctedDist + 0.0001f));
-      // screenHeight = wall_h, realHeight = tileSize, focalLength = win_h,
-      // distance = measured ray length
-      // screenHeight = (realHeight * focalLength) / distance
+      // Distance to wall (perpendicular)
+      float perpWallDist;
+      if (side == 0)
+        perpWallDist = (mapX - posX + (1 - stepX) / 2.0f) / dirX;
+      else
+        perpWallDist = (mapY - posY + (1 - stepY) / 2.0f) / dirY;
 
-      int y0 = win_h / 2 - wall_h / 2; // locking y axis
+      // Projected wall height
+      int wall_h =
+          (int)((win_h * tileSize) / (perpWallDist * tileSize + 1e-6f));
+      int y0 = win_h / 2 - wall_h / 2;
       int y1 = win_h / 2 + wall_h / 2;
-
       if (y0 < 0)
         y0 = 0;
       if (y1 > (int)win_h)
         y1 = win_h;
 
-      uint32_t color = wallColor(hitTile);
+      // ---- Texture sampling ----
+      if (textures.find(hitTile) != textures.end()) {
+        auto &tex = textures[hitTile];
 
-      int col = win_w + k;
-      for (int y = y0; y < y1; y++) {
-        framebuffer[y * out_w + col] = color;
+        float wallX; // exact hit location in [0,1)
+        if (side == 0)
+          wallX = posY + perpWallDist * dirY;
+        else
+          wallX = posX + perpWallDist * dirX;
+        wallX -= floor(wallX);
+
+        int tex_x = int(wallX * tex_w);
+        if (side == 0 && dirX > 0)
+          tex_x = tex_w - tex_x - 1;
+        if (side == 1 && dirY < 0)
+          tex_x = tex_w - tex_x - 1;
+
+        int col = win_w + k;
+        for (int y = y0; y < y1; ++y) {
+          int d = (y - y0) * 256;
+          int tex_y = ((d * tex_h) / wall_h) / 256;
+          framebuffer[y * out_w + col] = tex[tex_y * tex_w + tex_x];
+        }
+      } else {
+        // fallback flat color
+        uint32_t color = wallColor(hitTile);
+        int col = win_w + k;
+        for (int y = y0; y < y1; ++y) {
+          framebuffer[y * out_w + col] = color;
+        }
       }
     }
 
     char fname[64];
-    sprintf(fname, "frame_%03d.ppm", frame);
+    sprintf(fname, "frametex_%03d.ppm", frame);
     dropPpmImage(fname, framebuffer, out_w, out_h);
   }
   return 0;
