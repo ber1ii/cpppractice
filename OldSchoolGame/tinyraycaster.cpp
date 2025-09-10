@@ -1,3 +1,4 @@
+
 #include <array>
 #include <cassert>
 #include <cmath>
@@ -11,28 +12,8 @@
 #include <unordered_map>
 #include <vector>
 #define STB_IMAGE_IMPLEMENTATION
+#include "map.h"
 #include "stb_image.h"
-
-// Define a 16x16 map
-constexpr size_t map_w = 16;
-constexpr size_t map_h = 16;
-constexpr size_t tileSize = 32;
-const char map[] = "0000222222220000"
-                   "1              0"
-                   "1      11111   0"
-                   "1     0        0"
-                   "0     0  1110000"
-                   "0     3        0"
-                   "0   10000      0"
-                   "0   0   11100  0"
-                   "0   0   0      0"
-                   "0   0   1  00000"
-                   "0       1      0"
-                   "2       1      0"
-                   "0       0      0"
-                   "0 0000000      0"
-                   "0              0"
-                   "0002222222200000";
 
 // Representing colors in a 32bit integer
 constexpr uint32_t packColor(const uint8_t r, const uint8_t g, const uint8_t b,

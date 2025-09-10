@@ -1,6 +1,12 @@
 [
 {
   "directory": "/home/beri/C++/cpppractice/OldSchoolGame/build",
+  "command": "/usr/bin/g++ -I/home/beri/C++/cpppractice/OldSchoolGame -g -std=gnu++20 -Wall -Wextra -pedantic -O3 -o CMakeFiles/OldSchoolGame.dir/map.cpp.o -c /home/beri/C++/cpppractice/OldSchoolGame/map.cpp",
+  "file": "/home/beri/C++/cpppractice/OldSchoolGame/map.cpp",
+  "output": "/home/beri/C++/cpppractice/OldSchoolGame/build/CMakeFiles/OldSchoolGame.dir/map.cpp.o"
+},
+{
+  "directory": "/home/beri/C++/cpppractice/OldSchoolGame/build",
   "command": "/usr/bin/g++ -I/home/beri/C++/cpppractice/OldSchoolGame -g -std=gnu++20 -Wall -Wextra -pedantic -O3 -o CMakeFiles/OldSchoolGame.dir/tinyraycaster.cpp.o -c /home/beri/C++/cpppractice/OldSchoolGame/tinyraycaster.cpp",
   "file": "/home/beri/C++/cpppractice/OldSchoolGame/tinyraycaster.cpp",
   "output": "/home/beri/C++/cpppractice/OldSchoolGame/build/CMakeFiles/OldSchoolGame.dir/tinyraycaster.cpp.o"

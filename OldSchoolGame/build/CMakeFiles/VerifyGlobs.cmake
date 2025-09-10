@@ -4,6 +4,7 @@
 # SRC_FILES at CMakeLists.txt:6 (file)
 file(GLOB NEW_GLOB LIST_DIRECTORIES true "/home/beri/C++/cpppractice/OldSchoolGame/*.cpp")
 set(OLD_GLOB
+  "/home/beri/C++/cpppractice/OldSchoolGame/map.cpp"
   "/home/beri/C++/cpppractice/OldSchoolGame/tinyraycaster.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
