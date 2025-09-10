@@ -49,9 +49,33 @@ cmake_ninja_workdir = /home/beri/C++/cpppractice/OldSchoolGame/build/
 
 build cmake_object_order_depends_target_OldSchoolGame: phony || .
 
+build CMakeFiles/OldSchoolGame.dir/draw.cpp.o: CXX_COMPILER__OldSchoolGame_unscanned_Debug /home/beri/C++/cpppractice/OldSchoolGame/draw.cpp || cmake_object_order_depends_target_OldSchoolGame
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles/OldSchoolGame.dir/draw.cpp.o.d
+  FLAGS = -g -std=gnu++20 -Wall -Wextra -pedantic -O3
+  INCLUDES = -I/home/beri/C++/cpppractice/OldSchoolGame
+  OBJECT_DIR = CMakeFiles/OldSchoolGame.dir
+  OBJECT_FILE_DIR = CMakeFiles/OldSchoolGame.dir
+
+build CMakeFiles/OldSchoolGame.dir/image.cpp.o: CXX_COMPILER__OldSchoolGame_unscanned_Debug /home/beri/C++/cpppractice/OldSchoolGame/image.cpp || cmake_object_order_depends_target_OldSchoolGame
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles/OldSchoolGame.dir/image.cpp.o.d
+  FLAGS = -g -std=gnu++20 -Wall -Wextra -pedantic -O3
+  INCLUDES = -I/home/beri/C++/cpppractice/OldSchoolGame
+  OBJECT_DIR = CMakeFiles/OldSchoolGame.dir
+  OBJECT_FILE_DIR = CMakeFiles/OldSchoolGame.dir
+
 build CMakeFiles/OldSchoolGame.dir/map.cpp.o: CXX_COMPILER__OldSchoolGame_unscanned_Debug /home/beri/C++/cpppractice/OldSchoolGame/map.cpp || cmake_object_order_depends_target_OldSchoolGame
   CONFIG = Debug
   DEP_FILE = CMakeFiles/OldSchoolGame.dir/map.cpp.o.d
+  FLAGS = -g -std=gnu++20 -Wall -Wextra -pedantic -O3
+  INCLUDES = -I/home/beri/C++/cpppractice/OldSchoolGame
+  OBJECT_DIR = CMakeFiles/OldSchoolGame.dir
+  OBJECT_FILE_DIR = CMakeFiles/OldSchoolGame.dir
+
+build CMakeFiles/OldSchoolGame.dir/texture.cpp.o: CXX_COMPILER__OldSchoolGame_unscanned_Debug /home/beri/C++/cpppractice/OldSchoolGame/texture.cpp || cmake_object_order_depends_target_OldSchoolGame
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles/OldSchoolGame.dir/texture.cpp.o.d
   FLAGS = -g -std=gnu++20 -Wall -Wextra -pedantic -O3
   INCLUDES = -I/home/beri/C++/cpppractice/OldSchoolGame
   OBJECT_DIR = CMakeFiles/OldSchoolGame.dir
@@ -73,7 +97,7 @@ build CMakeFiles/OldSchoolGame.dir/tinyraycaster.cpp.o: CXX_COMPILER__OldSchoolG
 #############################################
 # Link the executable OldSchoolGame
 
-build OldSchoolGame: CXX_EXECUTABLE_LINKER__OldSchoolGame_Debug CMakeFiles/OldSchoolGame.dir/map.cpp.o CMakeFiles/OldSchoolGame.dir/tinyraycaster.cpp.o
+build OldSchoolGame: CXX_EXECUTABLE_LINKER__OldSchoolGame_Debug CMakeFiles/OldSchoolGame.dir/draw.cpp.o CMakeFiles/OldSchoolGame.dir/image.cpp.o CMakeFiles/OldSchoolGame.dir/map.cpp.o CMakeFiles/OldSchoolGame.dir/texture.cpp.o CMakeFiles/OldSchoolGame.dir/tinyraycaster.cpp.o
   CONFIG = Debug
   DEP_FILE = CMakeFiles/OldSchoolGame.dir/link.d
   FLAGS = -g
