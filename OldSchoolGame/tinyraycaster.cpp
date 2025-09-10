@@ -132,23 +132,6 @@ int main() {
     // Compute angle forr this frame
     float player_a = 2 * M_PI * frame / numFrames;
 
-    // Minimap floor color
-    /*for (size_t j = 0; j < win_h; ++j) {
-      for (size_t i = 0; i < win_w; ++i) {
-        framebuffer[i + j * out_w] = packColor(245, 245, 220);
-      }
-    }
-
-    for (size_t j{}; j < win_h; j++) {
-      for (size_t i = win_w; i < out_w; i++) {
-        if (j < win_h / 2) {
-          framebuffer[i + j * out_w] = packColor(245, 245, 220); // White
-        } else {
-          framebuffer[i + j * out_w] = packColor(245, 245, 220); // Beige
-        }
-      }
-    } */
-
     // Background filling
     for (size_t j{}; j < win_h; j++) {
       for (size_t i{}; i < win_w; i++)
