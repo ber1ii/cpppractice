@@ -1,7 +1,7 @@
 # ninja log v6
-692	735	1757504350874856256	OldSchoolGame	36c6d04a10656890
-11	692	1757504350191496632	CMakeFiles/OldSchoolGame.dir/tinyraycaster.cpp.o	9f2e0dd526554bbd
-2	10	1757504350184829709	/home/beri/C++/cpppractice/OldSchoolGame/build/CMakeFiles/cmake.verify_globs	18ee7cdfb8f383a4
 1	10	1757504462452969324	/home/beri/C++/cpppractice/OldSchoolGame/build/CMakeFiles/cmake.verify_globs	18ee7cdfb8f383a4
 11	653	1757504462462969789	CMakeFiles/OldSchoolGame.dir/tinyraycaster.cpp.o	9f2e0dd526554bbd
 653	693	1757504463106333099	OldSchoolGame	36c6d04a10656890
+0	8	1757506784920038064	/home/beri/C++/cpppractice/OldSchoolGame/build/CMakeFiles/cmake.verify_globs	18ee7cdfb8f383a4
+9	648	1757506784926704821	CMakeFiles/OldSchoolGame.dir/tinyraycaster.cpp.o	9f2e0dd526554bbd
+648	689	1757506785566713526	OldSchoolGame	36c6d04a10656890

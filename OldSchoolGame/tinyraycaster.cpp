@@ -130,7 +130,9 @@ int main() {
     std::vector<uint32_t> framebuffer(out_w * out_h, packColor(0, 0, 0));
 
     // Compute angle forr this frame
-    float player_a = 2 * M_PI * frame / numFrames;
+    float player_a =
+        2 * M_PI * frame / numFrames; // Central camera angle, eg ray to where
+                                      // the camera is pointing
 
     // Background filling
     for (size_t j{}; j < win_h; j++) {
@@ -166,9 +168,6 @@ int main() {
                   static_cast<int>(player_y - half_size), player_size,
                   player_size, packColor(0, 0, 0));
 
-    // Player direction
-    // float player_a = M_PI / 4.0f;
-
     // FOV rays
     float fov = M_PI / 3.0f;
     int numRays = win_w;
@@ -176,7 +175,7 @@ int main() {
     // FOV Direction minimap
     for (int k{}; k < numRays; k++) {
       float t = float(k) / (numRays - 1);
-      float ang = player_a - fov / 2 + fov * t;
+      float ang = player_a - fov / 2 + fov * t; // per-ray angle
       float dx = cos(ang), dy = sin(ang);
       int x1 = int(player_x + dx * 40);
       int y1 = int(player_y + dy * 40);
@@ -190,7 +189,7 @@ int main() {
       float angle =
           player_a - fov / 2 + fov * (static_cast<float>(k) / (numRays - 1));
       // player_a - fov/2 is the left most ray, while adding fov * k/numRays
-      // creates player_a + fov/2
+      // creates player_a + fov/2 rightmost
 
       float dirX = std::cos(angle); // Directional vectors
       float dirY = std::sin(angle);
@@ -220,8 +219,10 @@ int main() {
         rayY += dirY * step; // and return it to mapX and mapY
         dist += step;
       }
+      // Correcting the distance by cosine to remove fisheye
+      float correctedDist = dist * cos(angle - player_a);
 
-      int wall_h = (int)((win_h * tileSize) / (dist + 0.0001f));
+      int wall_h = (int)((win_h * tileSize) / (correctedDist + 0.0001f));
       // screenHeight = wall_h, realHeight = tileSize, focalLength = win_h,
       // distance = measured ray length
       // screenHeight = (realHeight * focalLength) / distance
