@@ -1,12 +1,10 @@
 # ninja log v6
-11	376	1757527545457599768	CMakeFiles/OldSchoolGame.dir/image.cpp.o	cd8685c970632855
-10	297	1757527545457599768	CMakeFiles/OldSchoolGame.dir/draw.cpp.o	b2a956f18e708af2
-11	4277	1757527545457599768	CMakeFiles/OldSchoolGame.dir/texture.cpp.o	35bfad74104e88d8
-10	685	1757526346370162209	CMakeFiles/OldSchoolGame.dir/renderer.cpp.o	e3fd90f8c0b21b1d
-4277	4322	1757527549724279880	OldSchoolGame	c884d2da33f7628
-11	757	1757527545460933113	CMakeFiles/OldSchoolGame.dir/tinyraycaster.cpp.o	9f2e0dd526554bbd
+0	9	1757698700930313088	/home/beri/C++/cpppractice/OldSchoolGame/build/CMakeFiles/cmake.verify_globs	18ee7cdfb8f383a4
 10	35	1757526346370162209	CMakeFiles/OldSchoolGame.dir/map.cpp.o	32ad2b6b475b6108
-1	10	1757527545450933081	/home/beri/C++/cpppractice/OldSchoolGame/build/CMakeFiles/cmake.verify_globs	18ee7cdfb8f383a4
-0	9	1757527802265070141	/home/beri/C++/cpppractice/OldSchoolGame/build/CMakeFiles/cmake.verify_globs	18ee7cdfb8f383a4
-10	721	1757527802275070172	CMakeFiles/OldSchoolGame.dir/tinyraycaster.cpp.o	9f2e0dd526554bbd
-721	769	1757527802985072381	OldSchoolGame	c884d2da33f7628
+10	1568	1757698700940313069	CMakeFiles/OldSchoolGame.dir/tinyraycaster.cpp.o	9f2e0dd526554bbd
+10	573	1757595413537444033	CMakeFiles/OldSchoolGame.dir/sprite.cpp.o	d12e6b4584ba6e7f
+4207	4260	1757698705136970315	OldSchoolGame	af60c0c750554a8d
+10	685	1757526346370162209	CMakeFiles/OldSchoolGame.dir/renderer.cpp.o	e3fd90f8c0b21b1d
+10	4207	1757698700940313069	CMakeFiles/OldSchoolGame.dir/texture.cpp.o	35bfad74104e88d8
+10	297	1757527545457599768	CMakeFiles/OldSchoolGame.dir/draw.cpp.o	b2a956f18e708af2
+11	376	1757527545457599768	CMakeFiles/OldSchoolGame.dir/image.cpp.o	cd8685c970632855

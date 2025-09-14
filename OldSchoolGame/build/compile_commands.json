@@ -19,6 +19,12 @@
 },
 {
   "directory": "/home/beri/C++/cpppractice/OldSchoolGame/build",
+  "command": "/usr/bin/g++ -I/home/beri/C++/cpppractice/OldSchoolGame -g -std=gnu++20 -Wall -Wextra -pedantic -O3 -o CMakeFiles/OldSchoolGame.dir/sprite.cpp.o -c /home/beri/C++/cpppractice/OldSchoolGame/sprite.cpp",
+  "file": "/home/beri/C++/cpppractice/OldSchoolGame/sprite.cpp",
+  "output": "/home/beri/C++/cpppractice/OldSchoolGame/build/CMakeFiles/OldSchoolGame.dir/sprite.cpp.o"
+},
+{
+  "directory": "/home/beri/C++/cpppractice/OldSchoolGame/build",
   "command": "/usr/bin/g++ -I/home/beri/C++/cpppractice/OldSchoolGame -g -std=gnu++20 -Wall -Wextra -pedantic -O3 -o CMakeFiles/OldSchoolGame.dir/texture.cpp.o -c /home/beri/C++/cpppractice/OldSchoolGame/texture.cpp",
   "file": "/home/beri/C++/cpppractice/OldSchoolGame/texture.cpp",
   "output": "/home/beri/C++/cpppractice/OldSchoolGame/build/CMakeFiles/OldSchoolGame.dir/texture.cpp.o"

@@ -1,15 +1,16 @@
+#include "color.h"
+#include "draw.h"
+#include "image.h"
+#include "map.h"
+#include "sprite.h"
+#include "texture.h"
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-#include "color.h"
-#include "draw.h"
-#include "image.h"
-#include "map.h"
-#include "texture.h"
 
 // Pick flat colors in case texture lookup fails
 uint32_t wallColor(char tile) {
@@ -28,12 +29,34 @@ uint32_t wallColor(char tile) {
 int main() {
   int tex_w, tex_h;
   std::unordered_map<char, std::vector<uint32_t>> textures;
+  std::unordered_map<std::string, std::vector<uint32_t>> spriteTextures;
+  std::unordered_map<std::string, std::pair<int, int>>
+      spriteTexSize; // store w,h
 
   // Load wall textures
   textures['0'] = loadTexture("textures/cobblestone.png", tex_w, tex_h);
   textures['1'] = loadTexture("textures/lava.png", tex_w, tex_h);
   textures['2'] = loadTexture("textures/whitestone.png", tex_w, tex_h);
   textures['3'] = loadTexture("textures/pentagram.png", tex_w, tex_h);
+
+  spriteTextures["caprademon"] =
+      loadTexture("textures/caprademon.png", tex_w, tex_h);
+  spriteTexSize["caprademon"] = {tex_w, tex_h};
+
+  spriteTextures["imp"] = loadTexture("textures/imp.png", tex_w, tex_h);
+  spriteTexSize["imp"] = {tex_w, tex_h};
+
+  spriteTextures["elemental"] =
+      loadTexture("textures/elemental.png", tex_w, tex_h);
+  spriteTexSize["elemental"] = {tex_w, tex_h};
+
+  spriteTextures["lostsoul"] =
+      loadTexture("textures/lostsoul.png", tex_w, tex_h);
+  spriteTexSize["lostsoul"] = {tex_w, tex_h};
+
+  std::vector<Sprite> sprites = {
+      {3.5f, 4.5f, "imp"} // just below the player’s start
+  };
 
   // Window dimensions
   constexpr size_t win_w = 512;
@@ -57,6 +80,7 @@ int main() {
     float player_a = 2 * M_PI * frame / numFrames;
     // Central camera angle, eg ray to where
     // the camera is pointing
+    std::vector<float> zBuffer(win_w);
 
     // === BACKGROUND FILL ===
     for (size_t j = 0; j < win_h; j++) {
@@ -82,6 +106,14 @@ int main() {
       }
     }
 
+    // DRAW SPRITES ON MAP
+    for (auto &s : sprites) {
+      int px = int(s.x * tileSize);
+      int py = int(s.y * tileSize);
+      drawRectangle(framebuffer, out_w, out_h, px - 2, py - 2, 4, 4,
+                    packColor(255, 0, 255)); // magenta = sprite
+    }
+
     // === DRAW PLAYER ON MINIMAP ===
     constexpr int player_size = 5;
     int half_size = player_size / 2;
@@ -93,6 +125,7 @@ int main() {
     float fov = M_PI / 3.0f;
     int numRays = win_w;
 
+    // 3D RENDERING
     for (int k = 0; k < numRays; k++) {
       float ray_angle = player_a - fov / 2 + fov * (float(k) / (numRays - 1));
       // player_a - fov/2 is the left most ray, while adding fov * k/numRays
@@ -163,6 +196,7 @@ int main() {
       else
         perpWallDist = (mapY - posY + (1 - stepY) / 2.0f) / dirY;
 
+      zBuffer[k] = perpWallDist;
       int wall_h = int((win_h * tileSize) / (perpWallDist * tileSize + 1e-6f));
       int y0 = win_h / 2 - wall_h / 2;
       int y1 = win_h / 2 + wall_h / 2;
@@ -201,10 +235,28 @@ int main() {
         }
       }
     }
+    std::vector<Sprite> sortedSprites = sprites;
+
+    std::sort(sortedSprites.begin(), sortedSprites.end(),
+              [&](const Sprite &a, const Sprite &b) {
+                float dxA = a.x * tileSize + float(tileSize) / 2 - player_x;
+                float dyA = a.y * tileSize + float(tileSize) / 2 - player_y;
+                float dxB = b.x * tileSize + float(tileSize) / 2 - player_x;
+                float dyB = b.y * tileSize + float(tileSize) / 2 - player_y;
+                // sort descending (farthest first)
+                return dxA * dxA + dyA * dyA > dxB * dxB + dyB * dyB;
+              });
+
+    /*printf("Sprite %s: transformX=%.2f transformY=%.2f screenX=%d\n",
+           s.type.c_str(), transformX, transformY, spriteScreenX);*/
+
+    renderSprites(framebuffer, out_w, win_w, win_h, player_x, player_y,
+                  player_a, zBuffer, sortedSprites, spriteTextures,
+                  spriteTexSize);
 
     // Save current frame
     char fname[64];
-    std::sprintf(fname, "frametex_%03d.ppm", frame);
+    std::sprintf(fname, "framenext_%03d.ppm", frame);
     dropPpmImage(fname, framebuffer, out_w, out_h);
   }
 

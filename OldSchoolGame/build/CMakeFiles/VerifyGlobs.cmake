@@ -7,6 +7,7 @@ set(OLD_GLOB
   "/home/beri/C++/cpppractice/OldSchoolGame/draw.cpp"
   "/home/beri/C++/cpppractice/OldSchoolGame/image.cpp"
   "/home/beri/C++/cpppractice/OldSchoolGame/map.cpp"
+  "/home/beri/C++/cpppractice/OldSchoolGame/sprite.cpp"
   "/home/beri/C++/cpppractice/OldSchoolGame/texture.cpp"
   "/home/beri/C++/cpppractice/OldSchoolGame/tinyraycaster.cpp"
   )
