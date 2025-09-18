@@ -14,10 +14,12 @@ public:
   ChildVisitor(const Visitor &v, const DinString &parentId)
       : Visitor(v), parentId(parentId) {}
 
+  DinString getParentId() const { return parentId; }
+
   DinString toString() const override {
     DinString ret = "Child: ";
     ret += Visitor::toString();
-    ret += "Parent Id: ";
+    ret += " Parent Id: ";
     ret += parentId;
     return ret;
   }

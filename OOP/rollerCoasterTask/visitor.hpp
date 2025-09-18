@@ -14,7 +14,7 @@ public:
       : ticket(ticketNumber, type), id(id), name(name) {}
   DinString getId() const { return id; }
   DinString getName() const { return name; }
-  RideType getTicketType() const { return ticket.getRideType(); }
+  RideType getRideType() const { return ticket.getRideType(); }
 
   virtual DinString toString() const { return id + " " + name; }
 

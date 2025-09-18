@@ -1,4 +1,5 @@
 #pragma once
+#include "childVisitor.hpp"
 #include "dinstring.hpp"
 #include "list.hpp"
 #include "visitor.hpp"
@@ -27,7 +28,7 @@ public:
   }
 
   bool addVisitor(Visitor *v) {
-    if (v->getTicketType() != TYPE) {
+    if (v->getRideType() != TYPE) {
       return false;
     }
 
@@ -40,6 +41,24 @@ public:
       }
     }
 
+    ChildVisitor *cv = dynamic_cast<ChildVisitor *>(v);
+
+    if (cv != nullptr) {
+      bool parentFound = false;
+      for (int i = 1; i <= queue.size(); i++) {
+        Visitor *potentialParent;
+
+        queue.read(i, potentialParent);
+        if (potentialParent->getId() == cv->getParentId()) {
+          parentFound = true;
+          break;
+        }
+      }
+      if (!parentFound) {
+        return false;
+      }
+    }
+
     queue.add(queue.size() + 1, v);
     return true;
   }
@@ -47,7 +66,7 @@ public:
   int queueSize() const { return queue.size(); }
 
   bool runRide() {
-    if (state == RideState::CLOSED && queue.empty()) {
+    if (state == RideState::CLOSED || queue.empty()) {
       return false;
     }
 
@@ -81,18 +100,19 @@ public:
     switch (TYPE) {
     case RideType::THRILL:
       os << DinString("THRILL");
+      break;
     case RideType::FAMILY:
       os << DinString("FAMILY");
+      break;
     case RideType::KIDS:
       os << DinString("KIDS");
+      break;
     }
 
     os << " Capacity: " << CAPACITY;
     os << ", Duration: " << DURATION;
     os << ", state: " << rollerCoaster.convertRideState(rollerCoaster.state);
-    os << ", total duration (hours): "
-       << static_cast<float>(static_cast<float>(rollerCoaster.totalMinutes) /
-                             60);
+    os << ", total duration (hours): " << rollerCoaster.totalMinutes / 60.0f;
     os << ", total riders: " << rollerCoaster.totalRiders;
 
     if (!rollerCoaster.queue.empty()) {
