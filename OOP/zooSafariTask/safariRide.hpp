@@ -60,10 +60,22 @@ public:
       }
     }
 
-    if (v->getAge() < 18 && v->getAnimalType() == AnimalType::CARNIVORE) {
-      std::cout << "Only people over the age of 18 allowed to enter!"
-                << std::endl;
-      return false;
+    if (ChildVisitor *cv = dynamic_cast<ChildVisitor *>(v)) {
+      bool parentFound = false;
+      for (int i = 1; i <= queue.size(); i++) {
+        Visitor *potentialParent;
+        queue.read(i, potentialParent);
+        if (potentialParent->getId() == cv->getParentId()) {
+          parentFound = true;
+          break;
+        }
+      }
+      if (!parentFound)
+        return false;
+    } else {
+      if (TYPE == AnimalType::CARNIVORE && v->getAge() < 18) {
+        return false;
+      }
     }
 
     queue.add(queue.size() + 1, v);
