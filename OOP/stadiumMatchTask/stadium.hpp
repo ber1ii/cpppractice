@@ -44,24 +44,6 @@ public:
 
     if (cf != nullptr) {
       bool guardianFound = false;
-
-      for (int i = 1; i <= queue.size(); i++) {
-        Fan *potentialGuardian;
-
-        queue.read(i, potentialGuardian);
-        if (potentialGuardian->getId() == cf->getGuardianId()) {
-          guardianFound = true;
-          break;
-        }
-      }
-
-      if (!guardianFound) {
-        return false;
-      }
-    }
-
-    if (ChildFan *cf = dynamic_cast<ChildFan *>(f)) {
-      bool guardianFound = false;
       for (int i = 1; i <= queue.size(); i++) {
         Fan *potentialGuardian;
         queue.read(i, potentialGuardian);
